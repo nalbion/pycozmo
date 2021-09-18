@@ -86,6 +86,27 @@ class BehaviorPlayAnim(Behavior):
         self.cli.cancel_anim()
 
 
+class BehaviorReactToCliff(BehaviorPlayAnim):
+    def activate(self) -> None:
+        print("detected cliff")
+        self.cli.stop_all_motors()
+        self.anim_triggers = ("ReactToCliff", )
+        self.cli.drive_wheels(-5, -5, duration=.5)
+        super().activate()
+
+
+class BehaviorReactToPickup(BehaviorPlayAnim):
+    def activate(self) -> None:
+        print("picked up")
+        self.anim_triggers = ("ReactToPickup", )
+        super().activate()
+
+class BehaviorReactToImpact(BehaviorPlayAnim):
+    def activate(self) -> None:
+        print("impact")
+        self.anim_triggers = ("ReactToImpact", )
+        super().activate()
+
 class BehaviorPlayArbitraryAnim(BehaviorPlayAnim):
     """ Play a random animation trigger. """
 
@@ -121,8 +142,10 @@ def get_behavior_class_from_dict(data):
     class_map = {
         "PlayAnim": BehaviorPlayAnim,
         "PlayArbitraryAnim": BehaviorPlayArbitraryAnim,
-        "ReactToCliff": BehaviorReactToCliff,
         "DriveOffCharger": BehaviorDriveOffCharger,
+        "ReactToCliff": BehaviorReactToCliff,
+        "ReactToImpact": BehaviorReactToImpact,
+        "ReactToPickup": BehaviorReactToPickup,
     }
     cls = class_map.get(data["behaviorClass"], Behavior)
     return cls
